@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>neuracraftai</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <script src="https://apis.google.com/js/platform.js"></script>
+
+  <style>
+    body {
+       color: #3e3e3e;
+    }
+    /* Additional styles */
+    .hero-section {
+      position: relative;
+      height: 500px;
+      color: #fff;
+    }
+    .hero-image {
+      background-image: url('./images/hero.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 100%;
+      width: 100%;
+    }
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+    .feature-box {
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+      border-radius: 10px;
+      /* Added background color and shadow */
+      background-color: #f0f0f0;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      /* Added flexbox styles for equal height */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .feature-box-content {
+      flex: 1;
+    }
+    .feature-title {
+      font-weight: bold;
+    }
+    footer {
+      background-color: #333;
+      color: #ccc;
+      padding: 20px 0;
+      text-align: center;
+    }
+    .google-sign-in-button {
+    cursor: pointer;
+    transition: background-color .3s, box-shadow .3s;
+        
+    padding: 12px 16px 12px 42px;
+    border: none;
+    border-radius: 3px;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+    
+    color: #757575;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;
+    
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj48cGF0aCBkPSJNMTcuNiA5LjJsLS4xLTEuOEg5djMuNGg0LjhDMTMuNiAxMiAxMyAxMyAxMiAxMy42djIuMmgzYTguOCA4LjggMCAwIDAgMi42LTYuNnoiIGZpbGw9IiM0Mjg1RjQiIGZpbGwtcnVsZT0ibm9uemVybyIvPjxwYXRoIGQ9Ik05IDE4YzIuNCAwIDQuNS0uOCA2LTIuMmwtMy0yLjJhNS40IDUuNCAwIDAgMS04LTIuOUgxVjEzYTkgOSAwIDAgMCA4IDV6IiBmaWxsPSIjMzRBODUzIiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNNCAxMC43YTUuNCA1LjQgMCAwIDEgMC0zLjRWNUgxYTkgOSAwIDAgMCAwIDhsMy0yLjN6IiBmaWxsPSIjRkJCQzA1IiBmaWxsLXJ1bGU9Im5vbnplcm8iLz48cGF0aCBkPSJNOSAzLjZjMS4zIDAgMi41LjQgMy40IDEuM0wxNSAyLjNBOSA5IDAgMCAwIDEgNWwzIDIuNGE1LjQgNS40IDAgMCAxIDUtMy43eiIgZmlsbD0iI0VBNDMzNSIgZmlsbC1ydWxlPSJub256ZXJvIi8+PHBhdGggZD0iTTAgMGgxOHYxOEgweiIvPjwvZz48L3N2Zz4=);
+    background-color: white;
+    background-repeat: no-repeat;
+    background-position: 12px 11px;
+    width: 70%;
+}
+
+.google-sign-in-button:hover {
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 2px 4px rgba(0, 0, 0, .25);
+}
+
+.google-sign-in-button:active {
+    background-color: #eeeeee;
+}
+
+.google-sign-in-button:active {
+    outline: none;
+        box-shadow: 
+        0 -1px 0 rgba(0, 0, 0, .04),
+        0 2px 4px rgba(0, 0, 0, .25),
+        0 0 0 3px #c8dafc;
+}
+
+.google-sign-in-button:disabled {
+    filter: grayscale(100%);
+    background-color: #ebebeb;
+    box-shadow: 0 -1px 0 rgba(0, 0, 0, .04), 0 1px 1px rgba(0, 0, 0, .25);
+    cursor: not-allowed;
+}
+
+.text-with-lines::before,
+    .text-with-lines::after {
+      content: "";
+      display: inline-block;
+      height: 1px; /* Adjust the height of the line */
+      width: 50px; /* Adjust the width of the line */
+      background-color: black; /* Adjust the line color */
+      margin: 0 10px; /* Adjust the spacing between the text and lines */
+    }
+
+    .text-with-lines {
+      display: flex;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+
+    <script>
+        var apikey = ''
+        function fetchData(apiUrl, cb){
+            fetch(apiUrl)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the data
+                cb(data);
+            })
+            .catch(error => {
+                // Handle errors
+                cb("error");
+                console.error('Fetch error:', error);
+            });
+        }
+
+        // Function to get a cookie by name
+        function getCookie(cookieName) {
+            const name = cookieName + "=";
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookieArray = decodedCookie.split(';');
+
+            for (let i = 0; i < cookieArray.length; i++) {
+                let cookie = cookieArray[i].trim();
+                if (cookie.indexOf(name) === 0) {
+                return cookie.substring(name.length, cookie.length);
+                }
+            }
+
+            return null; // Cookie not found
+        }
+        function deleteCookie(cookieName) {
+            document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        }
+        // Function to set a cookie with a given name, value, and optional expiration days
+        function setCookie(cookieName, cookieValue, expirationDays) {
+            const date = new Date();
+            date.setTime(date.getTime() + (expirationDays * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = `${cookieName}=${cookieValue};${expires};path=/`;
+        }
+
+        function loggedInView(name){
+           
+            document.getElementById('login_ssobtn').innerHTML = "Hi " + name;
+            document.getElementById('ssologinForm').style.display = 'none';
+            document.getElementById('sso_userInfo').style.display = '';
+            document.getElementById('sso_username').innerHTML = name;
+        
+
+        }
+        function getQueryParam(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+        function loggedOutView(){
+            document.getElementById('sso_username').innerHTML = '';
+            document.getElementById('ssologinForm').style.display = '';
+            document.getElementById('sso_userInfo').style.display = 'none';
+            document.getElementById('sso_continuebtn').style.display = '';
+            document.getElementById('sso_pwd_box').style.display = 'none';
+            document.getElementById('sso_loginbtn').style.display = 'none';
+        }
+        function initSSO(){
+                var accessKey = null;
+                accessKey = getQueryParam('uid');
+                if(accessKey == null){
+                    accessKey = getCookie('sso_accessKey');
+                }
+
+             if(accessKey != null){
+                    fetchData('http://demo.neuracraftai.com/getSession?accessKey='+accessKey, handleSession);
+                }  else {
+                    fetchData('http://demo.neuracraftai.com/getSession', handleSession);
+                } 
+
+                login_ssobtn.addEventListener('click', function() {
+                    var accessKey = getCookie('sso_accessKey');
+                    var name = getCookie('sso_name'); 
+                    if(accessKey != null){
+                        loggedInView(name)
+                    } else {
+                        // document.getElementById('sso_pwd').style.display = '';
+                        loggedOutView()
+                    }
+                });
+            }
+
+                
+                function isElementVisible(element) {
+                    const style = window.getComputedStyle(element);
+                    return style.display !== 'none' && style.visibility !== 'hidden';
+                }
+                function handleSession(data){
+                    console.log(data)
+                    if(data != "error"){
+                        if(data.hasOwnProperty('accessKey') && data.accessKey != null && data.accessKey != ""){
+                            loggedInView(data.name);
+                            setCookie("sso_accessKey", data.accessKey, 30); 
+                            setCookie("sso_accessToken", data.accessToken, 30); 
+                            setCookie("sso_email", data.email, 30); 
+                            setCookie("sso_name", data.name, 30);  
+                            document.getElementById('login_ssobtn').innerHTML = "Hi " + data.name;
+                        } else {
+                            document.getElementById('sso_pwd_box').style.display = '';
+                            document.getElementById('sso_loginbtn').style.display = '';
+                            document.getElementById('sso_continuebtn').style.display = 'none';
+                            
+                        }
+                    } 
+                }
+        function signInWithEmail(){
+            var val =  document.getElementById('sso_email').value;
+            fetchData('http://demo.neuracraftai.com/getSession?accessKey='+btoa(val), handleSession);
+        }
+        async function signInWithEmailPassword() {
+            var emailInput = document.getElementById("sso_email");
+            var pwdInput = document.getElementById("sso_pwd");
+            if (!emailInput.value) {
+            alert("Please fill in all fields");
+            return;
+            }
+            var formData = new FormData();
+            formData.append("username", emailInput.value);
+            formData.append("password", pwdInput.value);
+            
+            try {
+            const response = await fetch("http://demo.neuracraftai.com/login", {
+                method: "POST",
+                body: formData,
+
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setCookie("sso_accessKey", data.accessKey, 30); 
+                setCookie("sso_accessToken", data.accessToken, 30); 
+                setCookie("sso_email", data.email, 30); 
+                setCookie("sso_name", data.name, 30);  
+                document.getElementById('login_ssobtn').innerHTML = "Hi " + data.name;
+                document.getElementById('sso_closebtn').click();
+
+            } else {
+                console.error("Error:", response.statusText);
+            }
+            } catch (error) {
+            console.error("Error:", error);
+            }
+             // document.getElementById("ssologinForm").reset();
+        }
+      
+
+        function ssologoutHandler(){
+            setCookie("sso_accessKey1", getCookie("sso_accessKey"))
+            deleteCookie('sso_accessKey','');
+            deleteCookie('sso_name','');
+            deleteCookie('sso_email','');
+            deleteCookie('sso_accessToken','');
+            document.getElementById('login_ssobtn').innerHTML = "Login";
+            document.getElementById('sso_email').value= ""
+            document.getElementById('sso_closebtn').click();
+
+        }
+        function fetchEmailInfo(email){
+           var obj =  fetchData('http://demo.neuracraftai.com/getSession?email='+email);
+           if(!obj){
+            // show password
+           } else{
+            // show user name
+           }
+        }
+        function onGoogleClickHandler(){
+           // window.open("https://demo.neuracraftai.com/oauth2/authorization/google-idp?targetUrl=http%3A%2F%2Flocalhost%3A5500%2F","_self")
+           window.open("https://demo.neuracraftai.com/home?targetUrl=http%3A%2F%2Flocalhost%3A5500%2F","_self")
+        }
+        </script>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        <h3><span style="color:#bc3d3f">neuracraft</span><span style="color:#00a1df">AI</span></h3>
+       
+      </a>
+      <div class="navbar-nav ms-auto">
+        <a class="nav-link" href="#">Services</a>
+        <a class="nav-link" href="#">Solutions</a>
+        <a class="nav-link" href="#">Team</a>
+        <div class="navbar-nav ms-auto">
+            <!-- Add a data-bs-toggle attribute to trigger the modal -->
+            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#loginModal" id="login_ssobtn" >Login</a>
+            <!-- Add more links as needed -->
+          </div>
+        <!-- Add more links as needed -->
+      </div>
+    </div>
+  </nav>
+
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-end">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="sso_closebtn"></button>
+        </div>
+        <div class="modal-body">
+            <div class="container">
+                <div class="row justify-content-center" id="ssologinForm">
+                  <div class="col-md-12">
+                    <!-- Login Form -->
+                    
+                      <!-- Google Login Button -->
+                      <button type="button" class="btn btn-danger mb-3" onclick="onGoogleClickHandler()">
+                        <img src="https://img.icons8.com/color/16/000000/google-logo.png" class="me-2" alt="Google Icon">
+                        Login with Google
+                      </button>
+              
+                      <div class="mb-3">
+                        <p class="text-muted">Or Login with email</p>
+                      </div>
+              
+                      <form>
+                                <!-- Email Input -->
+                      <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="sso_email" placeholder="Enter your email" required>
+                      </div>
+              
+                      <!-- Password Input -->
+                      <div class="mb-3" style="display: none;" id="sso_pwd_box">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="sso_pwd" placeholder="Enter your password">
+                      </div>
+              
+                      <!-- Login Button -->
+                      <div class="btn btn-primary" onclick="signInWithEmail()" id="sso_continuebtn">
+                        <i class="icon-user icon-white"></i> Continue
+                      </div>
+
+                      <div class="btn btn-primary" onclick="signInWithEmailPassword()" id="sso_loginbtn" style="display: none;">
+                        <i class="icon-user icon-white"></i> Login
+                      </div>
+                    </form>
+              
+                  </div>
+                </div>
+                <div id="sso_userInfo" style="display: none;">
+                    <h5 id="sso_username"></h5>
+                    <button type="button" class="btn btn-danger" onclick="ssologoutHandler()">Logout</button>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-image">
+      <div class="overlay">
+        <h1>Unlocking Seamless Customer Experiences with AI-Driven Data Platforms and Cross-Domain Cross-Platform User Unification.</h1>
+        <p>Experts at end-to-end product engineering & building custom software at scale for start-ups and enterprises. Outsource product development, build on-demand teams, or hire individual remote developers at competitive prices.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section with Image and Text -->
+  <section class="container my-5">
+    <div class="row">
+      <div class="col-md-6">
+        <img src="./images/third-party-cookies.png" alt="Image" class="img-fluid">
+      </div>
+      <div class="col-md-6">
+        <h2>Market overview </h2>
+        <p>Major transformations are on the horizon for the digital advertising realm in 2024 as Google permanently phases out third-party cookies. It's imperative for publishers, advertisers, and tech platforms to adapt promptly to avoid lagging behind. 
+            The TrustoAI team is ready to assist you by offering educational resources and cutting-edge technology, empowering you to safeguard your business and prosper in the post-cookie era as the demise of third-party cookies does not signal the demise of digital advertising; instead, it presents an opportunity for innovation.
+            Embark on your journey into a cookieless future today! <a href="#">Know More</a>
+            </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section with Feature Boxes -->
+  <section class="container my-5">
+    <div class="text-center">
+        <h2>Our Solutions</h2>
+        <p>AI Solutions That Drive Change</p>
+      </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="feature-box">
+            <div class="feature-box-content">
+          <i class="bi bi-check-circle"></i>
+          <h3>AI-Driven Customer Data Platform (CDP)</h3>
+          <p>A Customer Data Platform (CDP) powered by Artificial Intelligence is a comprehensive solution that enables organizations to collect, organize, and analyze customer data from various touchpoints</p>
+                </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+            <div class="feature-box-content">
+          <i class="bi bi-check-circle"></i>
+          <h3>Data Management Platform (DMP)</h3>
+          <p>A Data Management Platform (DMP) powered by AI is a centralized repository that collects, organizes, and activates data from various sources. It enables businesses to harness the power of data for targeted advertising, audience segmentation, and content personalization.
+        </p>
+            </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="feature-box">
+            <div class="feature-box-content">
+                 <i class="bi bi-check-circle"></i>
+          <h3>Cross-Domain(Cross Platform) User Unification and Data  Partnering</h3>
+          <p>Breaking down data silos and unifying user data across domains is crucial for creating a unified customer experience. AI plays a pivotal role in cross-domain user unification, allowing businesses to seamlessly integrate data from various sources.</p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <p>@ 2024 trustAI. All Rights Reserved. Privacy Policy | Cookie Policy | Terms of Use</p>
+    </div>
+  </footer>
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+      initSSO()
+  </script>
+</body>
+</html>
